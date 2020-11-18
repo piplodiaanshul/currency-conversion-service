@@ -3,6 +3,7 @@ package com.learner.microservices.currency_conversion.controllers;
 import com.learner.microservices.currency_conversion.feign_clients.ForexClient;
 import com.learner.microservices.currency_conversion.models.CurrencyConversionResponse;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +35,13 @@ public class CurrencyConversionController {
                 notes = "Fetch the converted amount for the currency from Forex micro-service",
                 response = CurrencyConversionResponse.class)
   @GetMapping("currency-converter/from/{from}/to/{to}/quantity/{quantity}")
-  public CurrencyConversionResponse convertCurrency(@PathVariable String from,
-                                                    @PathVariable String to,
-                                                    @PathVariable BigDecimal quantity) {
+  public CurrencyConversionResponse convertCurrency(
+      @ApiParam(value = "Currency that needs to be converted", required = true)
+      @PathVariable String from,
+      @ApiParam(value = "Desired currency", required = true)
+      @PathVariable String to,
+      @ApiParam(value = "The total quantity that needs to be converted", required = true)
+      @PathVariable BigDecimal quantity) {
     CurrencyConversionResponse currencyConversionResponse =
         forexClient.fetchExchangeValue(from, to);
     BigDecimal conversionFactor = currencyConversionResponse.getConversionMultiple();
